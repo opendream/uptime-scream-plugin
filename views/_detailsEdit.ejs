@@ -1,0 +1,27 @@
+<fieldset>
+  <div class="control-group">
+    <label class="control-label">Scream audio file</label>
+    <div class="controls">
+
+      <div class="has-scream-file" <% if (!check.getPollerParam('scream_file')) { %>style="display: none;"<% } %>>
+        <a target="_blank" href="/uploads/<%= check._id %>.<%= check.getPollerParam('scream_file') %>"><%= check.getPollerParam('scream_file') %></a>
+        <button class="remove-scream-file">change</button>
+      </div>
+      <div class="no-scream-file" <% if (check.getPollerParam('scream_file')) { %>style="display: none;"<% } %>>
+        <input type="file" class="span8" name="check[scream_file]" accept="audio/mpeg" />
+        <span class="help-inline">Upload an audio file in mp3 format</span>
+      </div>
+
+    </div>
+  </div>
+</fieldset>
+<script type="text/javascript">
+  jQuery(function($) {
+    $('#check_form').attr('enctype', 'multipart/form-data');
+    $('.remove-scream-file').click(function (e) {
+      e.preventDefault();
+      $('.has-scream-file').hide();
+      $('.no-scream-file').show();
+    })
+  });
+</script>

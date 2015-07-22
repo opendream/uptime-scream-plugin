@@ -1,0 +1,64 @@
+<script src="<%= route %>/javascripts/ejs.min.js"></script>
+<script id="check_template" type="text/template">
+    <div style="width: 33.33%; padding: 40px 20px; float: left;">
+        <div class="thumbnail">
+            <img src="/images/server-down.jpg" alt="server down">
+            <div class="caption">
+                <h3>{{= check.url }}</h3>
+                <p>Please, check me</p>
+                <p>{{= checkEvent.details }}</p>
+                <audio controls autoplay id="audio-{{= check._id }}-{{= index }}" style="display: none;">
+                    <source src="{{= check.audio_file }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <p style="text-align: center;">
+                    <a style="padding: 7px 20px; display: block;" href="#audio-{{= check._id }}-{{= index }}" id="shut-up-{{= check._id }}-{{= index }}" class="btn btn-primary shut-up" role="button">Shut Up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<h1>
+    I'll scream when you down
+</h1>
+
+<div id="screams" class="row">
+</div>
+
+<script>
+$(document).ready(function() {
+
+    var check_template = document.getElementById('check_template').innerHTML;
+    var ejs = require('ejs');
+    ejs.open = '{{';
+    ejs.close = '}}';
+
+    var lines = [];
+
+    socket.on('CheckEvent', function (checkEvent) {
+
+        if (checkEvent.message == 'down' || checkEvent.isGoDown) {
+
+            $.get('/api/checks/' + checkEvent.check, function(check) {
+
+                if (check.pollerParams.scream_file) {
+                    check.audio_file = '/uploads/' + check._id + '.' + check.pollerParams.scream_file;
+
+                    var index = lines.length + 1;
+
+                    lines.push(check);
+                    $('#screams').prepend(ejs.render(check_template, { check: check, checkEvent: checkEvent, index: index }));
+
+                    $('#shut-up-' + check._id + '-' + index).click(function (e) {
+                        e.preventDefault();
+                        $($(this).attr('href')).get(0).pause();
+                        $(this).removeClass('btn-primary');
+                    })
+                }
+            });
+        }
+    });
+});
+</script>
