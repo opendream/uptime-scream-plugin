@@ -7,7 +7,7 @@
                 <h3>{{= check.url }}</h3>
                 <p>Please, check me</p>
                 <p>{{= checkEvent.details }}</p>
-                <audio controls autoplay id="audio-{{= check._id }}-{{= index }}" style="display: none;">
+                <audio controls autoplay loop id="audio-{{= check._id }}-{{= index }}" style="display: none;">
                     <source src="{{= check.audio_file }}" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
